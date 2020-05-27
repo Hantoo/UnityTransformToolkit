@@ -38,7 +38,7 @@ CornerL will allow you to pull the outer corners, with the middle pinned.
 </p>
    
 ### Distribute   
-
+The distribute functions will distribute between the first and last items in the list.
 #### Across Line   
 ##### Axis Control   
 You are able to distribute your selection evenly along any axis: X, Y, Z, or all three.   
