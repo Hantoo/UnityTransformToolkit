@@ -53,7 +53,7 @@ You are able to distribute your selection evenly along any axis: X, Y, Z, or all
 #### Across Area
 
 ### Selection   
-You have 5 buttons which allow you to scroll through a selection. This is handy when paired to the move tool.
+You have 5 buttons which allow you to scroll through a selection. This is handy when paired to the move tool. Each item within a selection has a number by it to show you where abouts it is in the list of items that you have selected.
 <p align="left" style="background-color: #383838;">
   <img src="Readme_Assets/Selection.gif"/ >
 </p>
