@@ -44,6 +44,13 @@ public class JLBPos_WindowFunctions
         AllAxis
     }
 
+    public enum objectAttrubutes
+    {
+        Position,
+        Rotation,
+        //Scale,
+    }
+
 
     //Selection
 
