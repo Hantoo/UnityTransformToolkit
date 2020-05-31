@@ -349,8 +349,9 @@ public class JLBPos_WindowManager : EditorWindow
     
     void distrubteRotation()
     {
-        //Quaternion difference = Quaternion.Inverse(movedObj.transform.rotation) * moveToRotation;
-
+        Vector3 Fromangle;
+        Vector3 ToAngle;
+        float change;
         Quaternion difference = Quaternion.Inverse(selectionOrder[0].transform.rotation) *
                                 selectionOrder[selectionOrder.Count - 1].transform.rotation;
         
@@ -366,17 +367,34 @@ public class JLBPos_WindowManager : EditorWindow
             
             
             case JLBPos_WindowFunctions.distrubtion.XAxis:
-                Debug.LogError("Axis Distribution For Single Axis Does Not Work");
-                /*for (int i = 0; i < selectionOrder.Count; i++)
-                { 
-                    selectionOrder[i].transform.rotation = selectionOrder[i].transform.rotation;// this is 90 degrees around y axis
-                }*/
+                Fromangle = selectionOrder[0].transform.rotation.eulerAngles;
+                ToAngle = selectionOrder[selectionOrder.Count - 1].transform.rotation.eulerAngles;
+                change = ToAngle.x - Fromangle.x;
+                change = change / selectionOrder.Count;
+                for (int i = 0; i < selectionOrder.Count-1; i++)
+                {
+                    selectionOrder[i].transform.rotation = Quaternion.Euler(new Vector3(selectionOrder[0].transform.rotation.eulerAngles.x + (change*i) , selectionOrder[i].transform.rotation.eulerAngles.y, selectionOrder[i].transform.rotation.eulerAngles.z));
+                }
                 break;
             case JLBPos_WindowFunctions.distrubtion.YAxis:
-                Debug.LogError("Axis Distribution For Single Axis Does Not Work");
+                Fromangle = selectionOrder[0].transform.rotation.eulerAngles;
+                ToAngle = selectionOrder[selectionOrder.Count - 1].transform.rotation.eulerAngles;
+                change = ToAngle.y - Fromangle.y;
+                change = change / selectionOrder.Count;
+                for (int i = 0; i < selectionOrder.Count-1; i++)
+                {
+                    selectionOrder[i].transform.rotation = Quaternion.Euler(new Vector3(selectionOrder[i].transform.rotation.eulerAngles.x, selectionOrder[0].transform.rotation.eulerAngles.y + (change*i) , selectionOrder[i].transform.rotation.eulerAngles.z));
+                }
                 break;
             case JLBPos_WindowFunctions.distrubtion.ZAxis:
-                Debug.LogError("Axis Distribution For Single Axis Does Not Work");
+                Fromangle = selectionOrder[0].transform.rotation.eulerAngles;
+                ToAngle = selectionOrder[selectionOrder.Count - 1].transform.rotation.eulerAngles;
+                change = ToAngle.z - Fromangle.z;
+                change = change / selectionOrder.Count;
+                for (int i = 0; i < selectionOrder.Count-1; i++)
+                {
+                    selectionOrder[i].transform.rotation = Quaternion.Euler(new Vector3(selectionOrder[i].transform.rotation.eulerAngles.x,  selectionOrder[i].transform.rotation.eulerAngles.y, selectionOrder[0].transform.rotation.eulerAngles.z + (change*i)));
+                }
                 break;
            }
     }

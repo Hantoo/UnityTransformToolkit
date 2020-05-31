@@ -3,7 +3,7 @@
 A custom transform toolkit made by Joel.   
 When selecting any object, the selection order *DOES* matter. There is a handy little button called "Select All Children In Hierarchy" which will select the child objects in the parent selected in the order that it sits in the inspector hierarchy.   
    
-Although most of the examples here only show the transformation of GameObjects being manipulated, it is worth nothing that this toolkit also allows for Rotation manipulation
+Although most of the examples here only show the transformation of GameObjects being manipulated, it is worth nothing that this toolkit also allows for Rotation manipulation. All rotation for every attribute within the tool kit will use local rotation and position of the object and not the global rotation or position.
    
 ### Move   
 With the toolkit "Active" you are able to move each item within the selection individually. If you have a selection and Disable the toolkit then you are able to move the entire group together.   
@@ -43,7 +43,7 @@ Edge will allow you to pull the outer corners, with the middle pinned.
 The distribute functions will distribute between the first and last items in the list. A purple line will be shown from the first to last object to help you see in which direction the items will be distrubted.
 #### Across Line   
 ##### Axis Control   
-You are able to distribute your selection evenly along any axis: X, Y, Z, or all three.   
+You are able to distribute your selection evenly along any axis (position and rotation): X, Y, Z, or all three.   
 <p align="left" style="background-color: #383838;">
   <img src="Readme_Assets/DistubX.gif"/ >
 </p>
@@ -65,7 +65,6 @@ You have 5 buttons which allow you to scroll through a selection. This is handy 
 ## To Add
 
 * Distribute across 2 point area
-* Add distrubtion single axis rotation distrubition
 * Add undo to unity's undo stack 
 * Save custom user defined selections
 * Quick Selection tools (grouping, offset - I.e. select 2 gameobjects in selection every 5 objects)
