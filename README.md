@@ -68,4 +68,4 @@ You have 5 buttons which allow you to scroll through a selection. This is handy 
 * Add undo to unity's undo stack 
 * Save custom user defined selections
 * Quick Selection tools (grouping, offset - I.e. select 2 gameobjects in selection every 5 objects)
-* Add invert one of the axis on edge (mirror)
+* Add curves 

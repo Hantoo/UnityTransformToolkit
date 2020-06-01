@@ -8,7 +8,7 @@ using UnityEngine.UIElements;
 public class JLBPos_WindowManager : EditorWindow
 {
 
-    private static JLBPos_WindowFunctions functionClass;
+    private static JLBPos_WindowFunctions functionClass = new JLBPos_WindowFunctions();
 
     private int ActiveInt, prevActiveInt = 0;
     
@@ -22,13 +22,11 @@ public class JLBPos_WindowManager : EditorWindow
     private bool spreadEdgeAlterMiddleElements;
     private JLBPos_WindowFunctions.distrubtion distubitePattern;
     private JLBPos_WindowFunctions.objectAttrubutes attrubuteToAdjust;
-    
     public static List<GameObject> selectionOrder = new List<GameObject>();
     public static List<GameObject> selectionOrder_background = new List<GameObject>();
     Tool LastTool = Tool.None;
     private int currentlySelectedIndex = 0;
     private GameObject movedObject;
-    
     
     [MenuItem("Tools/JLB Pos Tools")]
     public static void ShowWindow()
@@ -64,7 +62,8 @@ public class JLBPos_WindowManager : EditorWindow
 
         if (selectionOrder.Count > 0)
         {
-
+            #region Selection
+            
             GUILayout.BeginHorizontal();
 
             if(GUILayout.Button("<<<", GUILayout.Width(60)))
@@ -119,50 +118,46 @@ public class JLBPos_WindowManager : EditorWindow
             }
 
             GUILayout.EndHorizontal();
-
-            functionNames = (JLBPos_WindowFunctions.toolNames) EditorGUILayout.EnumPopup("Tool", functionNames);
             
-            attrubuteToAdjust =
+            #endregion
+
+            functionClass.functionNames = (JLBPos_WindowFunctions.toolNames) EditorGUILayout.EnumPopup("Tool", functionClass.functionNames);
+            
+            functionClass.attrubuteToAdjust =
                 (JLBPos_WindowFunctions.objectAttrubutes) EditorGUILayout.EnumPopup("Attribute To Adjust",
-                    attrubuteToAdjust);
+                    functionClass.attrubuteToAdjust);
         
 
-            switch (functionNames)
+            switch (functionClass.functionNames)
             {
 
                 case JLBPos_WindowFunctions.toolNames.Spread:
-                    spreadFunction =
+                    functionClass.spreadFunction =
                         (JLBPos_WindowFunctions.spreadFunctions) EditorGUILayout.EnumPopup("Spread Mode",
-                            spreadFunction);
-                    if (spreadFunction == JLBPos_WindowFunctions.spreadFunctions.Edge)
+                            functionClass.spreadFunction);
+                    if (functionClass.spreadFunction == JLBPos_WindowFunctions.spreadFunctions.Edge)
                     {
                         
-                        spreadEdgeMirror = EditorGUILayout.Toggle("Edge Mirror", spreadEdgeMirror);
-                        spreadEdgeAlterMiddleElements =
-                            EditorGUILayout.Toggle("Spread Even Middle", spreadEdgeAlterMiddleElements);
+                        functionClass.spreadEdgeMirror = EditorGUILayout.Toggle("Edge Mirror", functionClass.spreadEdgeMirror);
+                        functionClass.spreadEdgeAlterMiddleElements =
+                            EditorGUILayout.Toggle("Spread Even Middle", functionClass.spreadEdgeAlterMiddleElements);
                     }
                     break;
                 case JLBPos_WindowFunctions.toolNames.Distribute:
-                    distubitePattern =
+                    functionClass.distubitePattern =
                         (JLBPos_WindowFunctions.distrubtion) EditorGUILayout.EnumPopup("Distribution Mode",
-                            distubitePattern);
+                            functionClass.distubitePattern);
                     if (GUILayout.Button("Distribute Evenly"))
                     {
                         
-                        switch (attrubuteToAdjust)
+                        switch (functionClass.attrubuteToAdjust)
                         {
                          case JLBPos_WindowFunctions.objectAttrubutes.Position:
-                             distrubtePosition();
+                             functionClass.distrubtePosition(selectionOrder);
                              
                              break;
                          case JLBPos_WindowFunctions.objectAttrubutes.Rotation:
-                             /*if (distubitePattern != JLBPos_WindowFunctions.distrubtion.AllAxis)
-                             {
-                                 distubitePattern = JLBPos_WindowFunctions.distrubtion.AllAxis;
-                                 Repaint();
-                             }*/
-
-                             distrubteRotation();
+                             functionClass.distrubteRotation(selectionOrder);
                              break;
                         }
                         
@@ -175,16 +170,15 @@ public class JLBPos_WindowManager : EditorWindow
             }
 
             GUILayout.Space(20);
-            functioncalculationOrder =
+            functionClass.functioncalculationOrder =
                 (JLBPos_WindowFunctions.calculationOrder) EditorGUILayout.EnumPopup("Offset Selection By ",
-                    functioncalculationOrder);
-            functionCurveType =
-                (JLBPos_WindowFunctions.curveType) EditorGUILayout.EnumPopup("Curve", functionCurveType);
+                    functionClass.functioncalculationOrder);
+            functionClass.functionCurveType =
+                (JLBPos_WindowFunctions.curveType) EditorGUILayout.EnumPopup("Curve", functionClass.functionCurveType);
 
             // Window Code
         }
     }
-
 
     void RepaintSceneView()
     {
@@ -204,8 +198,7 @@ public class JLBPos_WindowManager : EditorWindow
         SceneView.duringSceneGui -= OnSceneGUI;
         Tools.current = LastTool;
     }
-
-
+    
     void getChildrenInHierarchy()
     {
         Transform[] Children = Selection.activeGameObject.GetComponentsInChildren<Transform>();
@@ -227,7 +220,7 @@ public class JLBPos_WindowManager : EditorWindow
     void OnSceneGUI(SceneView sv)
     {
         
-        switch (functionNames)
+        switch (functionClass.functionNames)
         {
             case JLBPos_WindowFunctions.toolNames.Distribute:
                 if (selectionOrder.Count > 0)
@@ -241,7 +234,7 @@ public class JLBPos_WindowManager : EditorWindow
 
         for (int i = 0; i < selectionOrder.Count; i++)
         {
-            switch (attrubuteToAdjust)
+            switch (functionClass.attrubuteToAdjust)
             {
                 case JLBPos_WindowFunctions.objectAttrubutes.Position:
                     Vector3 movedObjPos =PositionHandle(
@@ -255,13 +248,13 @@ public class JLBPos_WindowManager : EditorWindow
                         if (movedObjPos.z != selectionOrder[i].gameObject.transform.position.z) axisChange.z = 1;
 
 
-                        switch (functionNames)
+                        switch (functionClass.functionNames)
                         {
                             case JLBPos_WindowFunctions.toolNames.Move:
                                 selectionOrder[i].transform.position = movedObjPos;
                                 break;
                             case JLBPos_WindowFunctions.toolNames.Spread:
-                                spreadObjectsPosition(selectionOrder[i].gameObject, movedObjPos);
+                                functionClass.spreadObjectsPosition(selectionOrder,selectionOrder[i].gameObject, movedObjPos);
                                 break;
                    
                    
@@ -276,13 +269,13 @@ public class JLBPos_WindowManager : EditorWindow
                         selectionOrder[i].gameObject.transform.position);
                     if (Objectrotation != selectionOrder[i].transform.rotation)
                     {
-                        switch (functionNames)
+                        switch (functionClass.functionNames)
                         {
                             case JLBPos_WindowFunctions.toolNames.Move:
                                 selectionOrder[i].transform.rotation = Objectrotation;
                                 break;
                             case JLBPos_WindowFunctions.toolNames.Spread:
-                                spreadObjectsRotation(selectionOrder[i].gameObject, Objectrotation);
+                                functionClass.spreadObjectsRotation(selectionOrder[i].gameObject, Objectrotation, selectionOrder);
                                 break;
                         }
                     }
@@ -300,267 +293,7 @@ public class JLBPos_WindowManager : EditorWindow
     {
         Repaint();
     }
-
-    void distrubtePosition()
-    {
-        Vector3 difference = selectionOrder[selectionOrder.Count-1].transform.position -
-                             selectionOrder[0].transform.position;
-        Vector3 distancePerStep = difference / (selectionOrder.Count-1);
-
-        switch (distubitePattern)
-        {
-            case JLBPos_WindowFunctions.distrubtion.AllAxis:
-                for (int i = 0; i < selectionOrder.Count; i++)
-                {
-                    selectionOrder[i].transform.position = selectionOrder[0].transform.position + (distancePerStep * i);
-                }
-                break;
-            
-            case JLBPos_WindowFunctions.distrubtion.XAxis:
-                for (int i = 0; i < selectionOrder.Count; i++)
-                {
-                    selectionOrder[i].transform.position = new Vector3(selectionOrder[0].transform.position.x + (distancePerStep * i).x, 
-                        selectionOrder[i].transform.position.y,
-                        selectionOrder[i].transform.position.z);
-                }
-                break;
-            
-            case JLBPos_WindowFunctions.distrubtion.YAxis:
-                for (int i = 0; i < selectionOrder.Count; i++)
-                {
-                    selectionOrder[i].transform.position = new Vector3(selectionOrder[i].transform.position.x, selectionOrder[0].transform.position.x + (distancePerStep * i).y,
-                        selectionOrder[i].transform.position.z);
-                }
-                break;
-            
-            case JLBPos_WindowFunctions.distrubtion.ZAxis:
-                for (int i = 0; i < selectionOrder.Count; i++)
-                {
-                    selectionOrder[i].transform.position = new Vector3(selectionOrder[i].transform.position.x, selectionOrder[i].transform.position.y,
-                        selectionOrder[0].transform.position.x + (distancePerStep * i).z);
-                }
-                break;
-                
-            
-        }
-
-        
-    }
     
-    void distrubteRotation()
-    {
-        Vector3 Fromangle;
-        Vector3 ToAngle;
-        float change;
-        Quaternion difference = Quaternion.Inverse(selectionOrder[0].transform.rotation) *
-                                selectionOrder[selectionOrder.Count - 1].transform.rotation;
-        
-        switch (distubitePattern)
-        {
-            case JLBPos_WindowFunctions.distrubtion.AllAxis:
-                Debug.Log("ALL AXIS");
-                for (int i = 0; i < selectionOrder.Count; i++)
-                {
-                    selectionOrder[i].transform.rotation = selectionOrder[0].transform.rotation * Quaternion.Lerp(Quaternion.identity, difference, ((1f/(float)(selectionOrder.Count-1))*i)); 
-                }
-                break;
-            
-            
-            case JLBPos_WindowFunctions.distrubtion.XAxis:
-                Fromangle = selectionOrder[0].transform.rotation.eulerAngles;
-                ToAngle = selectionOrder[selectionOrder.Count - 1].transform.rotation.eulerAngles;
-                change = ToAngle.x - Fromangle.x;
-                change = change / selectionOrder.Count;
-                for (int i = 0; i < selectionOrder.Count-1; i++)
-                {
-                    selectionOrder[i].transform.rotation = Quaternion.Euler(new Vector3(selectionOrder[0].transform.rotation.eulerAngles.x + (change*i) , selectionOrder[i].transform.rotation.eulerAngles.y, selectionOrder[i].transform.rotation.eulerAngles.z));
-                }
-                break;
-            case JLBPos_WindowFunctions.distrubtion.YAxis:
-                Fromangle = selectionOrder[0].transform.rotation.eulerAngles;
-                ToAngle = selectionOrder[selectionOrder.Count - 1].transform.rotation.eulerAngles;
-                change = ToAngle.y - Fromangle.y;
-                change = change / selectionOrder.Count;
-                for (int i = 0; i < selectionOrder.Count-1; i++)
-                {
-                    selectionOrder[i].transform.rotation = Quaternion.Euler(new Vector3(selectionOrder[i].transform.rotation.eulerAngles.x, selectionOrder[0].transform.rotation.eulerAngles.y + (change*i) , selectionOrder[i].transform.rotation.eulerAngles.z));
-                }
-                break;
-            case JLBPos_WindowFunctions.distrubtion.ZAxis:
-                Fromangle = selectionOrder[0].transform.rotation.eulerAngles;
-                ToAngle = selectionOrder[selectionOrder.Count - 1].transform.rotation.eulerAngles;
-                change = ToAngle.z - Fromangle.z;
-                change = change / selectionOrder.Count;
-                for (int i = 0; i < selectionOrder.Count-1; i++)
-                {
-                    selectionOrder[i].transform.rotation = Quaternion.Euler(new Vector3(selectionOrder[i].transform.rotation.eulerAngles.x,  selectionOrder[i].transform.rotation.eulerAngles.y, selectionOrder[0].transform.rotation.eulerAngles.z + (change*i)));
-                }
-                break;
-           }
-    }
-    void spreadObjectsPosition(GameObject movedObj, Vector3 moveToPosition)
-    {
-        // Gives with the distance between where the object is currently located and where it wants to be
-        Vector3 difference = moveToPosition - movedObj.transform.position;
-        Vector3 distancePerStep = difference / selectionOrder.Count;
-        
-        int selectionHalfAmount = 0;
-        
-        if (selectionOrder.Count % 2 == 0) //Even
-        { selectionHalfAmount = selectionOrder.Count / 2; }
-        else //Odd 
-        { selectionHalfAmount = (selectionOrder.Count - 1) / 2; }
-        
-        switch (spreadFunction)
-        {
-            case JLBPos_WindowFunctions.spreadFunctions.CornerL:
-                for (int i = 0; i < selectionOrder.Count; i++)
-                {
-                    selectionOrder[i].transform.position = selectionOrder[i].transform.position + (distancePerStep*i);
-                }
-                break;
-            
-            case JLBPos_WindowFunctions.spreadFunctions.CornerR:
-                for (int i = 0; i < selectionOrder.Count; i++)
-                {
-                    selectionOrder[i].transform.position = selectionOrder[i].transform.position + (distancePerStep*(selectionOrder.Count-i));
-                }
-                break;
-            
-            case JLBPos_WindowFunctions.spreadFunctions.Middle:
-                distancePerStep = difference / selectionHalfAmount;
-                for (int i = 0; i < selectionHalfAmount; i++)
-                {
-                    selectionOrder[i].transform.position = selectionOrder[i].transform.position + (distancePerStep*(i));
-                    selectionOrder[(selectionOrder.Count-1)-i].transform.position = selectionOrder[(selectionOrder.Count-1)-i].transform.position + (distancePerStep*(i));
-                    if (i == selectionHalfAmount-1)
-                    {
-                        if (selectionOrder.Count % 2 == 1)
-                        {
-                            selectionOrder[i + 1].transform.position =
-                                selectionOrder[i + 1].transform.position + (distancePerStep * (i + 1));
-                        }
-                    }
-                }
-                break;
-            
-            case JLBPos_WindowFunctions.spreadFunctions.Edge:
-                if (selectionOrder.Count % 2 == 1)
-                {
-                    selectionHalfAmount++;
-                }
-                if (spreadEdgeAlterMiddleElements)
-                {
-                    if (selectionOrder.Count % 2 == 0)
-                    {
-                        selectionHalfAmount++;
-                    }
-                }
-
-                distancePerStep = difference / selectionHalfAmount;
-                for (int i = 0; i < selectionHalfAmount; i++)
-                {
-                    selectionOrder[i].transform.position = selectionOrder[i].transform.position + (distancePerStep*((selectionHalfAmount-1)-i));
-                    if (spreadEdgeMirror)
-                    {
-                        selectionOrder[(selectionOrder.Count - 1) - i].transform.position =
-                            selectionOrder[(selectionOrder.Count - 1) - i].transform.position +
-                            (distancePerStep * ((selectionHalfAmount - 1) - i));
-                    }
-                    else
-                    {
-                        selectionOrder[(selectionOrder.Count - 1) - i].transform.position =
-                            selectionOrder[(selectionOrder.Count - 1) - i].transform.position +
-                            (-distancePerStep * ((selectionHalfAmount - 1) - i));
-                    }
-
-                    if (i == selectionHalfAmount-1)
-                    {
-                        if (selectionOrder.Count % 2 == 1)
-                        {
-                            selectionOrder[i + 1].transform.position =
-                                selectionOrder[i + 1].transform.position + (distancePerStep * ((selectionHalfAmount-1)-i));
-                        }
-                    }
-                }
-                break;
-        }
-    }
-   
-    
-    void spreadObjectsRotation(GameObject movedObj, Quaternion moveToRotation)
-    {
-        Quaternion difference = Quaternion.Inverse(movedObj.transform.rotation) * moveToRotation;
-        int selectionHalfAmount = 0;
-        if (selectionOrder.Count % 2 == 0) //Even
-        { selectionHalfAmount = selectionOrder.Count / 2; }
-        else //Odd 
-        { selectionHalfAmount = (selectionOrder.Count - 1) / 2; }
-        
-        switch (spreadFunction)
-        {
-            case JLBPos_WindowFunctions.spreadFunctions.CornerL:
-                for (int i = 0; i < selectionOrder.Count; i++)
-                {
-                    selectionOrder[i].transform.rotation = selectionOrder[i].transform.rotation * Quaternion.Lerp(Quaternion.identity, difference, ((1f/(float)selectionOrder.Count)*i)); 
-                } 
-                break;
-            
-            case JLBPos_WindowFunctions.spreadFunctions.CornerR:
-                for (int i = 0; i < selectionOrder.Count; i++)
-                    {
-                        selectionOrder[i].transform.rotation = selectionOrder[i].transform.rotation * Quaternion.Lerp(Quaternion.identity, difference, 1f-((1f/(float)selectionOrder.Count)+((1f/(float)selectionOrder.Count)*i))); 
-                    }
-                break;
-            
-            case JLBPos_WindowFunctions.spreadFunctions.Middle:
-                for (int i = 0; i < selectionHalfAmount; i++)
-                {
-                    selectionOrder[i].transform.rotation = selectionOrder[i].transform.rotation * Quaternion.Lerp(Quaternion.identity, difference, ((1f/(float)selectionHalfAmount)*i));
-                    selectionOrder[(selectionOrder.Count-1)-i].transform.rotation = selectionOrder[(selectionOrder.Count-1)-i].transform.rotation * Quaternion.Lerp(Quaternion.identity, difference, (1f/(float)selectionHalfAmount)*i) ; 
-                    if (i == selectionHalfAmount-1)
-                    {
-                        if (selectionOrder.Count % 2 == 1)
-                        {
-                            selectionOrder[i + 1].transform.rotation =
-                                selectionOrder[i + 1].transform.rotation * Quaternion.Lerp(Quaternion.identity, difference, ((1f/(float)selectionOrder.Count)*i+1));
-                        }
-                    }
-                }
-                break;
-            
-            case JLBPos_WindowFunctions.spreadFunctions.Edge:
-                if (!spreadEdgeAlterMiddleElements)
-                {
-                    if (selectionOrder.Count % 2 == 0)
-                    {
-                        selectionHalfAmount--;
-                    }
-                }
-                for (int i = 0; i < selectionHalfAmount; i++)
-                {
-                    selectionOrder[i].transform.rotation = selectionOrder[i].transform.rotation * Quaternion.Lerp(Quaternion.identity, difference, ((1f/(float)selectionHalfAmount)*((selectionHalfAmount)-i)));
-                    if (!spreadEdgeMirror)
-                    {
-                        Quaternion AmountToRotate = Quaternion.Lerp(Quaternion.identity, difference,
-                            ((1f / (float) selectionHalfAmount) * ((selectionHalfAmount) - i)));
-                        selectionOrder[(selectionOrder.Count - 1) - i].transform.rotation =
-                            selectionOrder[(selectionOrder.Count - 1) - i].transform.rotation *
-                            (Quaternion.Inverse(AmountToRotate));
-
-                    }
-                    else
-                    {
-                        selectionOrder[(selectionOrder.Count - 1) - i].transform.rotation =
-                            selectionOrder[(selectionOrder.Count - 1) - i].transform.rotation *
-                            Quaternion.Lerp(Quaternion.identity, difference,
-                                ((1f / (float) selectionHalfAmount) * ((selectionHalfAmount) - i)));
-                    }
-                } 
-                break;
-        }
-    }
-      
     Vector3 PositionHandle ( Vector3 position, Quaternion rotation, string name )
     {
         // right Axis
@@ -597,7 +330,6 @@ public class JLBPos_WindowManager : EditorWindow
         return newPos;
     }
     
-   
     private void OnSelectionChange()
     {
         
