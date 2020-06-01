@@ -65,7 +65,7 @@ You have 5 buttons which allow you to scroll through a selection. This is handy 
 ## To Add
 
 * Distribute across 2 point area
-* Add undo to unity's undo stack 
 * Save custom user defined selections
 * Quick Selection tools (grouping, offset - I.e. select 2 gameobjects in selection every 5 objects)
 * Add curves 
+* Get Spread on circle working properly

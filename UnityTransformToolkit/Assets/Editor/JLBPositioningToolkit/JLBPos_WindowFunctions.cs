@@ -36,6 +36,7 @@ public class JLBPos_WindowFunctions
         Move,
         Spread,
         Distribute,
+        CircularSpread,
     }
     
     public enum distrubtion
@@ -70,7 +71,9 @@ public class JLBPos_WindowFunctions
     public toolNames functionNames
     {
         get { return m_functionNames; }
-        set { m_functionNames = value; }
+        set { m_functionNames = value;
+            JLBPos_Gizmos.gizmoTools = value;
+        }
     }
     public spreadFunctions spreadFunction
     {
@@ -100,9 +103,6 @@ public class JLBPos_WindowFunctions
     #endregion
 
     #region  privateVariables
-
-    
-
     
     private curveType m_functionCurveType;
     private calculationOrder m_functioncalculationOrder;
@@ -387,6 +387,38 @@ public class JLBPos_WindowFunctions
            }
     }
     
+    #endregion
+
+    #region Circular Functions
+
+    public void CircularDistrbute(List<GameObject> selectionOrder, Vector3 DiscPosition, float DiscRadius)
+    {
+        float theta = 0f;
+        float deltaTheta = (2f * Mathf.PI) / selectionOrder.Count;
+                
+        for (int i = 0; i < selectionOrder.Count; i++)
+        {
+                    
+            /*Vector3 Pos = JLBPos_WindowManager.LastSelectedVector +
+                          new Vector3(JLBPos_WindowManager.CircularDiscSize, 0, 0);*/
+            Vector3 Pos = DiscPosition + new Vector3(DiscRadius * Mathf.Cos (theta), 0, DiscRadius * Mathf.Sin (theta));
+            selectionOrder[i].transform.position = Pos;
+            selectionOrder[i].transform.LookAt(DiscPosition);
+            theta += deltaTheta;
+        }
+    }
+
+    public void CircularSpread(List<GameObject> selectionOrder, GameObject movedObj, Vector3 moveToPosition)
+    {
+        Vector3 difference = moveToPosition - movedObj.transform.position;
+        Vector3 distancePerStep = difference / selectionOrder.Count;
+        for (int i = 0; i < selectionOrder.Count; i++)
+        {
+            
+            selectionOrder[i].transform.position = new Vector3(selectionOrder[i].transform.position.x + difference.x, selectionOrder[i].transform.position.y, selectionOrder[i].transform.position.z);
+        }
+    }
+
     #endregion
     
     #region Other Functions

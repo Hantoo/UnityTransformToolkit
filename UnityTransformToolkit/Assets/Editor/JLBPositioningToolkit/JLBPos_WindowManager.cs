@@ -27,7 +27,10 @@ public class JLBPos_WindowManager : EditorWindow
     Tool LastTool = Tool.None;
     private int currentlySelectedIndex = 0;
     private GameObject movedObject;
-    
+    public static float CircularDiscSize;
+    public static Vector3 LastSelectedVector;
+    private EditorWindow view;
+    private Transform sceneEditorCamera;
     [MenuItem("Tools/JLB Pos Tools")]
     public static void ShowWindow()
     {
@@ -121,14 +124,20 @@ public class JLBPos_WindowManager : EditorWindow
             
             #endregion
 
-            functionClass.functionNames = (JLBPos_WindowFunctions.toolNames) EditorGUILayout.EnumPopup("Tool", functionClass.functionNames);
             
-            functionClass.attrubuteToAdjust =
-                (JLBPos_WindowFunctions.objectAttrubutes) EditorGUILayout.EnumPopup("Attribute To Adjust",
-                    functionClass.attrubuteToAdjust);
-        
+                functionClass.functionNames =
+                    (JLBPos_WindowFunctions.toolNames) EditorGUILayout.EnumPopup("Tool", functionClass.functionNames);
 
-            switch (functionClass.functionNames)
+
+                if (functionClass.functionNames != JLBPos_WindowFunctions.toolNames.CircularSpread)
+                {
+                    functionClass.attrubuteToAdjust =
+                        (JLBPos_WindowFunctions.objectAttrubutes) EditorGUILayout.EnumPopup("Attribute To Adjust",
+                            functionClass.attrubuteToAdjust);
+                }
+
+
+                switch (functionClass.functionNames)
             {
 
                 case JLBPos_WindowFunctions.toolNames.Spread:
@@ -164,8 +173,16 @@ public class JLBPos_WindowManager : EditorWindow
                     }
 
                     break;
+                case JLBPos_WindowFunctions.toolNames.CircularSpread:
+                    CircularDiscSize = EditorGUILayout.Slider("Circle Radius", CircularDiscSize, 0f, 50f);
+                    if (GUILayout.Button("Distribute Circular Evenly"))
+                    {
+                        functionClass.CircularDistrbute(selectionOrder, LastSelectedVector, CircularDiscSize);
+                    }
+                    break;
                 case JLBPos_WindowFunctions.toolNames.Move:
                     break;
+                
 
             }
 
@@ -182,7 +199,7 @@ public class JLBPos_WindowManager : EditorWindow
 
     void RepaintSceneView()
     {
-        EditorWindow view = EditorWindow.GetWindow<SceneView>();
+        view = EditorWindow.GetWindow<SceneView>();
         view.Repaint();
     }
     // Window has been selected
@@ -198,7 +215,12 @@ public class JLBPos_WindowManager : EditorWindow
         SceneView.duringSceneGui -= OnSceneGUI;
         Tools.current = LastTool;
     }
-    
+
+    private void Update()
+    {
+        RepaintSceneView();
+    }
+
     void getChildrenInHierarchy()
     {
         Transform[] Children = Selection.activeGameObject.GetComponentsInChildren<Transform>();
@@ -215,11 +237,12 @@ public class JLBPos_WindowManager : EditorWindow
         }
         Selection.objects = ChildenGO;
     }
-    
+
+
     
     void OnSceneGUI(SceneView sv)
     {
-        
+        sceneEditorCamera = sv.camera.transform;
         switch (functionClass.functionNames)
         {
             case JLBPos_WindowFunctions.toolNames.Distribute:
@@ -229,6 +252,20 @@ public class JLBPos_WindowManager : EditorWindow
                         selectionOrder[0].transform.position, Color.magenta);
                 }
 
+                break;
+            case JLBPos_WindowFunctions.toolNames.CircularSpread:
+                if (selectionOrder.Count > 0)
+                {
+                    if (LastSelectedVector == Vector3.zero)
+                    {
+                        LastSelectedVector = selectionOrder[selectionOrder.Count - 1].transform.position +
+                                             new Vector3(-1, 0, -1);
+                    }
+                }
+                LastSelectedVector = Handles.PositionHandle(LastSelectedVector, Quaternion.identity);
+
+                
+                
                 break;
         }
 
@@ -255,6 +292,9 @@ public class JLBPos_WindowManager : EditorWindow
                                 break;
                             case JLBPos_WindowFunctions.toolNames.Spread:
                                 functionClass.spreadObjectsPosition(selectionOrder,selectionOrder[i].gameObject, movedObjPos);
+                                break;
+                            case JLBPos_WindowFunctions.toolNames.CircularSpread:
+                                functionClass.CircularSpread(selectionOrder, selectionOrder[i].gameObject, movedObjPos);
                                 break;
                    
                    
@@ -339,6 +379,7 @@ public class JLBPos_WindowManager : EditorWindow
             selectionOrder.Clear();
             selectionOrder_background.Clear();
             currentlySelectedIndex = 0;
+            LastSelectedVector = Vector3.zero;;
         }
         if (Selection.activeGameObject)
         {
