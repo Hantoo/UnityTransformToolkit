@@ -60,6 +60,12 @@ You have 5 buttons which allow you to scroll through a selection. This is handy 
   <img src="Readme_Assets/Selection.gif"/ >
 </p>
 
+### Circular Spread   
+This will spread the selected objects evenly around the projected disc. When you use this mode, the last object in the selection will generate a disc near it. You can use the disc size slider within the GUI to change the radius of the disc. You will see yellow dots which will show you where the objects in your selection will appear. All objects will be rotated to look towards the centre of the disc.
+<p align="left" style="background-color: #383838;">
+  <img src="Readme_Assets/circleDemo.gif"/ >
+</p>
+
 
 
 ## To Add

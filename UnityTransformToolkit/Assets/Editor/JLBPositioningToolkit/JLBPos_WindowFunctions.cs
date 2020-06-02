@@ -393,6 +393,7 @@ public class JLBPos_WindowFunctions
 
     public void CircularDistrbute(List<GameObject> selectionOrder, Vector3 DiscPosition, float DiscRadius)
     {
+        createUndoHistory("Circular Distrbute (Pos)", selectionOrder);
         float theta = 0f;
         float deltaTheta = (2f * Mathf.PI) / selectionOrder.Count;
                 
@@ -408,14 +409,15 @@ public class JLBPos_WindowFunctions
         }
     }
 
-    public void CircularSpread(List<GameObject> selectionOrder, GameObject movedObj, Vector3 moveToPosition)
+    public void CircularMove(List<GameObject> selectionOrder, GameObject movedObj, Vector3 moveToPosition)
     {
+        createUndoHistory("Circular Move (Pos)", selectionOrder);
         Vector3 difference = moveToPosition - movedObj.transform.position;
         Vector3 distancePerStep = difference / selectionOrder.Count;
         for (int i = 0; i < selectionOrder.Count; i++)
         {
             
-            selectionOrder[i].transform.position = new Vector3(selectionOrder[i].transform.position.x + difference.x, selectionOrder[i].transform.position.y, selectionOrder[i].transform.position.z);
+            selectionOrder[i].transform.position = selectionOrder[i].transform.position + difference;
         }
     }
 

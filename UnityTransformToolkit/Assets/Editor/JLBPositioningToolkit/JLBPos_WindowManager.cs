@@ -294,7 +294,7 @@ public class JLBPos_WindowManager : EditorWindow
                                 functionClass.spreadObjectsPosition(selectionOrder,selectionOrder[i].gameObject, movedObjPos);
                                 break;
                             case JLBPos_WindowFunctions.toolNames.CircularSpread:
-                                functionClass.CircularSpread(selectionOrder, selectionOrder[i].gameObject, movedObjPos);
+                                functionClass.CircularMove(selectionOrder, selectionOrder[i].gameObject, movedObjPos);
                                 break;
                    
                    
