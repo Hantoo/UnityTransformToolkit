@@ -1,6 +1,6 @@
 # UnityTransformToolkit
 
-*If you've found this project helpful or useful then please think about donating to buy me a cup of tea and continue my work on projects such as this one. * 
+*If you've found this project helpful or useful then please think about donating to buy me a cup of tea and continue my work on projects such as this one.*
 
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://paypal.me/joelrlb)
 
