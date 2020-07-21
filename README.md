@@ -1,5 +1,9 @@
 # UnityTransformToolkit
-   
+
+*If you've found this project helpful or useful then please think about donating to buy me a cup of tea and continue my work on projects such as this one. * 
+
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://paypal.me/joelrlb)
+
 A custom transform toolkit made by Joel.   
 When selecting any object, the selection order *DOES* matter. There is a handy little button called "Select All Children In Hierarchy" which will select the child objects in the parent selected in the order that it sits in the inspector hierarchy.   
    
